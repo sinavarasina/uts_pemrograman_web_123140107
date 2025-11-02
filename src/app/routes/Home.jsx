@@ -8,9 +8,9 @@ export default function Home() {
     const { add } = usePlaylist();
     const { playTrack } = usePlayer();
 
-    const [term, setTerm] = useState(() => localStorage.getItem("searchTerm") || "");
+    const [term, setTerm] = useState(() => sessionStorage.getItem("searchTerm") || "");
     const [results, setResults] = useState(() => {
-        const saved = localStorage.getItem("searchResults");
+        const saved = sessionStorage.getItem("searchResults");
         return saved ? JSON.parse(saved) : [];
     });
     const [loading, setLoading] = useState(false);
@@ -18,17 +18,19 @@ export default function Home() {
 
     useEffect(() => {
         const handler = async (e) => {
-            const q = e.detail.trim();
-            if (!q) return;
-            setTerm(q);
+            const { term, filters } = e.detail;
+            if (!term) return;
+
+            setTerm(term);
             setLoading(true);
             setError(null);
 
             try {
-                const data = await searchItunes({ term: q });
+                const data = await searchItunes({ term, ...filters });
                 setResults(data);
-                localStorage.setItem("searchResults", JSON.stringify(data));
-                localStorage.setItem("searchTerm", q);
+
+                sessionStorage.setItem("searchResults", JSON.stringify(data));
+                sessionStorage.setItem("searchTerm", term);
             } catch (err) {
                 setError(err);
             } finally {
@@ -37,19 +39,46 @@ export default function Home() {
         };
 
         window.addEventListener("musicSearch", handler);
-        return () => window.removeEventListener("musicSearch", handler);
+
+        const clearSession = () => {
+            sessionStorage.removeItem("searchResults");
+            sessionStorage.removeItem("searchTerm");
+        };
+        window.addEventListener("beforeunload", clearSession);
+
+        return () => {
+            window.removeEventListener("musicSearch", handler);
+            window.removeEventListener("beforeunload", clearSession);
+        };
     }, []);
 
     return (
-        <section>
+        <section style={{ position: "relative", textAlign: "center" }}>
             <h1 style={{ marginBottom: "1rem" }}>MiTunesX — Music Explorer</h1>
+
             {term && <p>Hasil pencarian untuk <em>{term}</em></p>}
             {loading && <p>Mengambil data...</p>}
             {error && <p style={{ color: "red" }}>{error.message}</p>}
+
             {results.length > 0 ? (
-                <MusicList tracks={results} onPlay={playTrack} onAdd={add} showAdd />
+                <MusicList
+                    tracks={results}
+                    onPlay={playTrack}
+                    onAdd={add}
+                    showAdd
+                />
             ) : (
-                !loading && <p>Ketikkan kata kunci musik di atas untuk mulai mencari.</p>
+                !loading && (
+                    <p
+                        style={{
+                            marginTop: "2rem",
+                            fontSize: "0.95rem",
+                            opacity: 0.85,
+                        }}
+                    >
+                        Ketikkan kata kunci musik di atas untuk mulai mencari.
+                    </p>
+                )
             )}
         </section>
     );

@@ -1,4 +1,23 @@
-export default function MusicList({ tracks, onPlay, onAdd, onRemove, showAdd = false, showRemove = false }) {
+import { useState } from "react";
+
+function formatDuration(ms) {
+    if (!ms) return "-";
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
+export default function MusicList({
+    tracks,
+    onPlay,
+    onAdd,
+    onRemove,
+    showAdd = false,
+    showRemove = false,
+}) {
+    const [selected, setSelected] = useState(null);
+
     return (
         <div>
             {tracks.map((track) => (
@@ -21,7 +40,14 @@ export default function MusicList({ tracks, onPlay, onAdd, onRemove, showAdd = f
                         (e.currentTarget.style.background = "rgba(255,255,255,0.05)")
                     }
                 >
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: "1" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.75rem",
+                            flex: "1",
+                        }}
+                    >
                         <img
                             src={track.artworkUrl100}
                             alt={track.trackName}
@@ -29,9 +55,22 @@ export default function MusicList({ tracks, onPlay, onAdd, onRemove, showAdd = f
                             height="48"
                             style={{ borderRadius: "2px", flexShrink: 0 }}
                         />
-                        <div style={{ lineHeight: "1.3" }}>
-                            <div style={{ fontSize: "0.9rem", fontWeight: "500" }}>{track.trackName}</div>
-                            <div style={{ fontSize: "0.8rem", color: "var(--color-teal)" }}>
+                        <div style={{ lineHeight: "1.3", textAlign: "left" }}>
+                            <div
+                                style={{
+                                    fontSize: "0.9rem",
+                                    fontWeight: "500",
+                                    color: "var(--color-light)",
+                                }}
+                            >
+                                {track.trackName}
+                            </div>
+                            <div
+                                style={{
+                                    fontSize: "0.8rem",
+                                    color: "var(--color-teal)",
+                                }}
+                            >
                                 {track.artistName}
                             </div>
                             <div
@@ -46,7 +85,13 @@ export default function MusicList({ tracks, onPlay, onAdd, onRemove, showAdd = f
                         </div>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                        }}
+                    >
                         <div style={{ fontSize: "0.75rem", opacity: 0.8 }}>
                             {new Date(track.releaseDate).getFullYear()}
                         </div>
@@ -90,9 +135,117 @@ export default function MusicList({ tracks, onPlay, onAdd, onRemove, showAdd = f
                                 ✕
                             </button>
                         )}
+                        <button
+                            onClick={() => setSelected(track)}
+                            style={{
+                                background: "transparent",
+                                border: "1px solid var(--color-border)",
+                                color: "var(--color-light)",
+                                padding: "0.3rem 0.6rem",
+                                fontSize: "0.8rem",
+                            }}
+                        >
+                            Lihat Detail
+                        </button>
                     </div>
                 </div>
             ))}
+
+            {selected && (
+                <div
+                    style={{
+                        position: "fixed",
+                        inset: 0,
+                        background: "rgba(0,0,0,0.6)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 50,
+                    }}
+                    onClick={() => setSelected(null)}
+                >
+                    <div
+                        style={{
+                            background: "var(--color-dark)",
+                            color: "var(--color-light)",
+                            borderRadius: "6px",
+                            padding: "1.2rem 1.5rem",
+                            width: "90%",
+                            maxWidth: "420px",
+                            textAlign: "left", // ← ini kuncinya
+                            boxShadow: "0 0 12px rgba(0,0,0,0.3)",
+                            animation: "fadeIn 0.2s ease-in",
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <img
+                            src={selected.artworkUrl100}
+                            alt={selected.trackName}
+                            width="100%"
+                            style={{
+                                borderRadius: "6px",
+                                marginBottom: "1rem",
+                            }}
+                        />
+                        <h3
+                            style={{
+                                marginBottom: "0.4rem",
+                                textAlign: "left",
+                                fontSize: "1.1rem",
+                                color: "#fff",
+                            }}
+                        >
+                            {selected.trackName}
+                        </h3>
+                        <p
+                            style={{
+                                color: "var(--color-teal)",
+                                marginBottom: "0.6rem",
+                                textAlign: "left",
+                            }}
+                        >
+                            {selected.artistName}
+                        </p>
+
+                        <p><strong>Album:</strong> {selected.collectionName}</p>
+                        <p><strong>Genre:</strong> {selected.primaryGenreName}</p>
+                        <p><strong>Durasi:</strong> {formatDuration(selected.trackTimeMillis)}</p>
+                        <p><strong>Rilis:</strong> {new Date(selected.releaseDate).toLocaleDateString()}</p>
+                        <p><strong>Harga:</strong> {selected.trackPrice ? `$${selected.trackPrice}` : "N/A"}</p>
+                        <p><strong>Negara:</strong> {selected.country}</p>
+
+                        <a
+                            href={selected.trackViewUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                display: "inline-block",
+                                marginTop: "0.8rem",
+                                color: "var(--color-pink)",
+                                textDecoration: "underline",
+                                textAlign: "left",
+                            }}
+                        >
+                            Buka di Apple Music →
+                        </a>
+
+                        <button
+                            onClick={() => setSelected(null)}
+                            style={{
+                                marginTop: "1rem",
+                                width: "100%",
+                                background: "var(--color-pink)",
+                                color: "#fff",
+                                padding: "0.4rem",
+                                borderRadius: "4px",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -10,20 +10,21 @@ export default function Playlist() {
 
     useEffect(() => {
         const handler = (e) => {
-            const term = e.detail.toLowerCase();
+            const term = (e.detail || "").toLowerCase();
+
             if (!term) {
                 setFiltered(playlist);
                 return;
             }
 
-            setFiltered(
-                playlist.filter(
-                    (i) =>
-                        i.trackName.toLowerCase().includes(term) ||
-                        i.artistName.toLowerCase().includes(term) ||
-                        i.collectionName.toLowerCase().includes(term)
-                )
+            const results = playlist.filter(
+                (i) =>
+                    i.trackName.toLowerCase().includes(term) ||
+                    i.artistName.toLowerCase().includes(term) ||
+                    i.collectionName.toLowerCase().includes(term)
             );
+
+            setFiltered(results);
         };
 
         window.addEventListener("playlistSearch", handler);
@@ -32,7 +33,13 @@ export default function Playlist() {
 
     return (
         <section>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "1rem",
+                }}
+            >
                 <h1>Playlist Kamu</h1>
                 <button
                     onClick={clear}
