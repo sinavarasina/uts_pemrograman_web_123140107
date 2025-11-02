@@ -1,7 +1,7 @@
 # MiTunesX — Music iTunes Xplorer
 
 **UTS Pemrograman Web | Varasina Farmadani (123140107)**
-[Demo Online (Vercel)](https://uts-pemweb-123140107-2maqe18bw-sinavarasinas-projects.vercel.app)
+[Demo Online (Vercel)](https://uts-pemweb-123140107.vercel.app)
 [Repository GitHub](https://github.com/sinavarasina/uts-pemweb-123140107)
 
 ---
@@ -112,7 +112,7 @@ Proyek ini dideploy otomatis melalui Vercel setiap push ke branch `main`.
 }
 ```
 
-URL produksi: [https://uts-pemweb-123140107-2maqe18bw-sinavarasinas-projects.vercel.app](https://uts-pemweb-123140107-2maqe18bw-sinavarasinas-projects.vercel.app)
+URL produksi: [https://uts-pemweb-123140107.vercel.app](https://uts-pemweb-123140107.vercel.app/)
 
 ---
 
