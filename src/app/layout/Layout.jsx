@@ -41,14 +41,7 @@ export default function Layout() {
 
                 <Header
                     onSearchSubmit={(term) => {
-                        if (isPlaylistPage) {
-                            window.dispatchEvent(
-
-                                new CustomEvent("playlistSearch", { detail: term })
-                            );
-                        } else {
-                            navigate(`/search?q=${encodeURIComponent(term)}`);
-                        }
+                        window.dispatchEvent(new CustomEvent("musicSearch", { detail: term }));
                     }}
                 />
             </header>
