@@ -4,7 +4,6 @@ import Home from "./routes/Home";
 import Search from "./routes/Search";
 import Playlist from "./routes/Playlist";
 import About from "./routes/About";
-
 export default function App() {
     return (
         <BrowserRouter>
@@ -12,6 +11,7 @@ export default function App() {
                 <Route element={<Layout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/search" element={<Search />} />
+
                     <Route path="/playlist" element={<Playlist />} />
                     <Route path="/about" element={<About />} />
                 </Route>
@@ -19,4 +19,3 @@ export default function App() {
         </BrowserRouter>
     );
 }
-

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+:root {
     /* https://www.color-hex.com/color-palette/19601 */
     --color-dark: #373b3e;
     --color-light: #bec8d1;

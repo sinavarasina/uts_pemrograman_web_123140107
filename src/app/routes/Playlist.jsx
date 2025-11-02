@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { usePlaylist } from "../../core/hooks/usePlaylist";
-import { usePlayer } from "../../core/context/PlayerContext";
+import {
+    usePlayer
+} from "../../core/context/PlayerContext";
 
 export default function Playlist() {
     const { playlist, remove, clear } = usePlaylist();
@@ -12,6 +14,7 @@ export default function Playlist() {
             const term = e.detail.toLowerCase();
             setFiltered(
                 playlist.filter(
+
                     (item) =>
                         item.trackName.toLowerCase().includes(term) ||
                         item.artistName.toLowerCase().includes(term)
@@ -21,7 +24,9 @@ export default function Playlist() {
         window.addEventListener("playlistSearch", handler);
         return () => window.removeEventListener("playlistSearch", handler);
     }, [playlist]);
-
+    useEffect(() => {
+        setFiltered(playlist);
+    }, [playlist]);
     return (
         <section>
             <h1>Playlist Kamu</h1>
@@ -29,18 +34,20 @@ export default function Playlist() {
             {filtered.length === 0 ? (
                 <p>Tidak ada musik di playlist.</p>
             ) : (
+
                 <ul>
                     {filtered.map((track) => (
                         <li key={track.trackId}>
                             <img src={track.artworkUrl100} alt={track.trackName} />
+
                             <span>{track.trackName}</span>
                             <button onClick={() => playTrack(track)}>Play</button>
                             <button onClick={() => remove(track.trackId)}>Hapus</button>
                         </li>
+
                     ))}
                 </ul>
             )}
         </section>
     );
 }
-

@@ -1,32 +1,6 @@
-import { useRef, useEffect } from "react";
-
+import { useRef } from "react";
 export default function Header({ onSearchSubmit }) {
     const inputRef = useRef(null);
-
-    useEffect(() => {
-        const handler = (e) => {
-            const active = document.activeElement;
-            const isTyping =
-                active.tagName === "INPUT" ||
-                active.tagName === "TEXTAREA" ||
-                active.tagName === "SELECT" ||
-                active.isContentEditable;
-
-            if (e.key === "/" && !isTyping) {
-                e.preventDefault();
-                inputRef.current?.focus();
-            }
-
-            if (e.key === "Escape" && active === inputRef.current) {
-                e.preventDefault();
-                inputRef.current?.blur();
-            }
-        };
-
-        document.addEventListener("keydown", handler);
-        return () => document.removeEventListener("keydown", handler);
-    }, []);
-
     const handleSubmit = (e) => {
         e.preventDefault();
         const term = inputRef.current?.value.trim();
@@ -36,27 +10,50 @@ export default function Header({ onSearchSubmit }) {
     return (
         <header
             style={{
-                background: "#137a7f",
-                padding: "1rem",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
+                gap: "0.75rem",
+                background: "var(--color-dark)",
+
+                padding: "0.5rem 1rem",
             }}
         >
-            <form onSubmit={handleSubmit} role="search">
+            <button
+                style={{
+                    background: "var(--color-pink)",
+
+                    color: "#fff",
+                    border: "none",
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    padding: "0.4rem 0.8rem",
+
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                }}
+            >
+                Filter
+            </button>
+
+            <form onSubmit={handleSubmit} role="search" style={{
+                flex: 1
+            }}>
                 <input
                     ref={inputRef}
                     type="search"
-                    placeholder="Cari musik... (tekan /)"
+                    placeholder="Search..."
                     style={{
-                        padding: "0.5rem 1rem",
-                        width: "320px",
-                        borderRadius: "8px",
-                        border: "none",
+
+                        width: "100%",
+                        padding: "0.5rem 0.75rem",
+                        borderRadius: "6px",
+                        border: "1px solid var(--color-border)",
+                        background: "var(--color-dark)",
+                        color: "var(--color-teal)",
                     }}
                 />
             </form>
+
         </header>
     );
 }
-

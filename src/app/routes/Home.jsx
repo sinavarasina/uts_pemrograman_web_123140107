@@ -1,9 +1,16 @@
-export default function Home() {
+export default
+    function Home() {
     return (
-        <section>
-            <h1>Selamat datang di MiTunesX (Music iTunes Xplorer)</h1>
-            <p>Ketik di kolom pencarian untuk mencari musik dari iTunes.</p>
+        <section
+            style={{
+                color: "var(--color-light)",
+                textAlign: "center",
+                marginTop: "2rem",
+            }}
+        >
+
+            <h1>Welcome to MiTunesX (Music iTunes Xplorer)</h1>
+            <p>Use the search bar above to explore iTunes music data.</p>
         </section>
     );
 }
-
