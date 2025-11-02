@@ -47,7 +47,7 @@ export default function Header({ onSearchSubmit }) {
                 <input
                     ref={inputRef}
                     type="search"
-                    placeholder="Cari musik... (tekan / untuk fokus)"
+                    placeholder="Cari musik... (tekan /)"
                     style={{
                         padding: "0.5rem 1rem",
                         width: "320px",

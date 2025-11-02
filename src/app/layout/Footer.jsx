@@ -1,13 +1,9 @@
-import { useState, useRef, useEffect } from "react";
-import { usePlaylist } from "../hooks/usePlaylist";
+import { useEffect, useRef } from "react";
+import { usePlayer } from "../../core/context/PlayerContext";
 
 export default function Footer() {
-    const { playlist } = usePlaylist();
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const { currentTrack, isPlaying, playTrack, pauseTrack } = usePlayer();
     const audioRef = useRef(null);
-
-    const currentTrack = playlist[currentIndex];
 
     useEffect(() => {
         if (audioRef.current && currentTrack?.previewUrl) {
@@ -20,26 +16,14 @@ export default function Footer() {
         if (!audioRef.current) return;
         if (isPlaying) {
             audioRef.current.pause();
-            setIsPlaying(false);
+            pauseTrack();
         } else {
             audioRef.current.play().catch(() => { });
-            setIsPlaying(true);
+            playTrack(currentTrack);
         }
     };
 
-    const playNext = () => {
-        if (playlist.length === 0) return;
-        setCurrentIndex((prev) => (prev + 1) % playlist.length);
-    };
-
-    const playPrev = () => {
-        if (playlist.length === 0) return;
-        setCurrentIndex((prev) =>
-            prev === 0 ? playlist.length - 1 : prev - 1
-        );
-    };
-
-    if (!currentTrack) {
+    if (!currentTrack)
         return (
             <footer
                 style={{
@@ -49,10 +33,9 @@ export default function Footer() {
                     textAlign: "center",
                 }}
             >
-                <span>Tidak ada lagu diputar</span>
+                Tidak ada lagu diputar
             </footer>
         );
-    }
 
     return (
         <footer
@@ -65,16 +48,13 @@ export default function Footer() {
                 padding: "0.75rem 1rem",
             }}
         >
-            {/* Info lagu */}
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                 <img
                     src={currentTrack.artworkUrl100}
                     alt={currentTrack.trackName}
                     width={48}
                     height={48}
-                    style={{
-                        borderRadius: "6px",
-                    }}
+                    style={{ borderRadius: "6px" }}
                 />
                 <div>
                     <h4 style={{ margin: 0 }}>{currentTrack.trackName}</h4>
@@ -82,15 +62,8 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Kontrol */}
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                <button onClick={playPrev}>⏮</button>
-                <button onClick={togglePlay}>{isPlaying ? "⏸" : "▶️"}</button>
-                <button onClick={playNext}>⏭</button>
-            </div>
-
-            {/* Audio tag */}
-            <audio ref={audioRef} onEnded={playNext} />
+            <button onClick={togglePlay}>{isPlaying ? "Stop" : "Play"}</button>
+            <audio ref={audioRef} />
         </footer>
     );
 }

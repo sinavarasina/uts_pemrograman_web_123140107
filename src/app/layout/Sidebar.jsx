@@ -20,6 +20,7 @@ export default function Sidebar() {
             <nav>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     <li><NavLink to="/" style={linkStyle}>HOME</NavLink></li>
+                    <li><NavLink to="/search" style={linkStyle}>SEARCH</NavLink></li>
                     <li><NavLink to="/playlist" style={linkStyle}>PLAYLIST</NavLink></li>
                     <li><NavLink to="/about" style={linkStyle}>ABOUT</NavLink></li>
                 </ul>
