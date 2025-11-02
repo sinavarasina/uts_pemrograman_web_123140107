@@ -87,7 +87,6 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: url("/assets/hatsune-miku-vector-33.png") center/contain no-repeat;
         opacity: 0.06;
         pointer-events: none;
         z-index: 0;
