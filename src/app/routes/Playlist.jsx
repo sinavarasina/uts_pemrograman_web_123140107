@@ -1,39 +1,36 @@
 import { usePlaylist } from "../../core/hooks/usePlaylist";
 import { usePlayer } from "../../core/context/PlayerContext";
-import PlaylistTable from "../../components/PlaylistTable";
-import { useEffect, useState } from "react";
+import MusicList from "../../components/MusicList";
 
 export default function Playlist() {
     const { playlist, remove, clear } = usePlaylist();
     const { playTrack } = usePlayer();
-    const [filtered, setFiltered] = useState(playlist);
-
-    useEffect(() => setFiltered(playlist), [playlist]);
 
     return (
-        <section style={{ textAlign: "center", marginTop: "1rem" }}>
-            <h2>Playlist</h2>
-            {filtered.length === 0 ? (
+        <section>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
+                <h1>Playlist</h1>
+                <button
+                    onClick={clear}
+                    style={{
+                        background: "var(--color-pink)",
+                        color: "#fff",
+                        padding: "0.4rem 0.8rem",
+                    }}
+                >
+                    Hapus Semua
+                </button>
+            </div>
+
+            {playlist.length === 0 ? (
                 <p>Tidak ada musik di playlist.</p>
             ) : (
-                <>
-                    <button
-                        onClick={clear}
-                        style={{
-                            marginBottom: "1rem",
-                            background: "var(--color-pink)",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "6px",
-                            padding: "0.5rem 1rem",
-                            cursor: "pointer",
-                            fontWeight: "bold",
-                        }}
-                    >
-                        Hapus Semua
-                    </button>
-                    <PlaylistTable data={filtered} onPlay={playTrack} onRemove={remove} />
-                </>
+                <MusicList
+                    tracks={playlist}
+                    onPlay={playTrack}
+                    onRemove={remove}
+                    showRemove
+                />
             )}
         </section>
     );

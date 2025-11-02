@@ -1,16 +1,122 @@
-@import "tailwindcss";
-
-:root {
     /* https://www.color-hex.com/color-palette/19601 */
-    --color-dark: #373b3e;
-    --color-light: #bec8d1;
-    --color-teal: #86cecb;
-    --color-deep: #137a7f;
-    --color-pink: #e12885;
+    :root {
+        --color-dark: #373b3e;
+        --color-light: #bec8d1;
+        --color-teal: #86cecb;
+        --color-deep: #137a7f;
+        --color-pink: #e12885;
 
-    --color-background: var(--color-deep);
-    --color-foreground: var(--color-light);
-    --color-primary: var(--color-teal);
-    --color-secondary: var(--color-pink);
-    --color-border: var(--color-dark);
-}
+        --color-background: var(--color-deep);
+        --color-foreground: var(--color-light);
+        --color-primary: var(--color-teal);
+        --color-secondary: var(--color-pink);
+        --color-border: var(--color-dark);
+    }
+
+    * {
+        box-sizing: border-box;
+        transition: all 0.25s ease;
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", sans-serif;
+    }
+
+    body {
+        background: var(--color-background);
+        color: var(--color-light);
+        overflow: hidden;
+    }
+
+    button {
+        cursor: pointer;
+        border: none;
+        outline: none;
+        font-family: inherit;
+    }
+
+    button:hover {
+        filter: brightness(1.15);
+        transform: translateY(-1px);
+    }
+
+    input,
+    select {
+        background: var(--color-dark);
+        border: 1px solid var(--color-border);
+        color: var(--color-teal);
+        outline: none;
+        padding: 6px 10px;
+    }
+
+    input:focus {
+        border-color: var(--color-pink);
+    }
+
+    main,
+    footer,
+    header,
+    aside {
+        animation: fadeIn 0.4s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-teal);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-pink);
+    }
+
+    main::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("/assets/hatsune-miku-vector-33.png") center/contain no-repeat;
+        opacity: 0.06;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    aside nav a:hover {
+        transform: scale(1.1);
+        color: var(--color-pink);
+    }
+
+
+    @media (max-width: 768px) {
+        main {
+            padding: 0.5rem;
+        }
+
+        main section div {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.4rem !important;
+        }
+
+        main section div>div:last-child {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        main section div img {
+            width: 42px;
+            height: 42px;
+        }
+    }

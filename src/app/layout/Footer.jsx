@@ -1,40 +1,15 @@
 import { usePlayer } from "../../core/context/PlayerContext";
 
-function formatTime(seconds) {
-    if (isNaN(seconds)) return "0:00";
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-}
-
 export default function Footer() {
-    const {
-        currentTrack,
-        isPlaying,
-        progress,
-        duration,
-        playTrack,
-        pauseTrack,
-        seek,
-    } = usePlayer();
+    const { currentTrack, isPlaying, progress, duration, playTrack, pauseTrack, seek } = usePlayer();
 
-    if (!currentTrack) {
-        return (
-            <footer
-                style={{
-                    background: "var(--color-light)",
-                    color: "var(--color-deep)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "0.5rem 1rem",
-                    borderTop: "2px solid var(--color-border)",
-                }}
-            >
-                <p>Tidak ada lagu yang diputar</p>
-            </footer>
-        );
-    }
+    const handleSeek = (e) => {
+        if (!duration) return;
+        const rect = e.target.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const ratio = clickX / rect.width;
+        seek(duration * ratio);
+    };
 
     return (
         <footer
@@ -43,70 +18,74 @@ export default function Footer() {
                 color: "var(--color-deep)",
                 display: "flex",
                 flexDirection: "column",
-                gap: "0.3rem",
-                padding: "0.6rem 1rem",
                 borderTop: "2px solid var(--color-border)",
             }}
         >
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                <img
-                    src={currentTrack.artworkUrl100}
-                    alt={currentTrack.trackName}
-                    width="48"
-                    height="48"
-                    style={{ borderRadius: "6px" }}
-                />
-                <div style={{ flex: 1 }}>
-                    <h4 style={{ margin: 0 }}>{currentTrack.trackName}</h4>
-                    <small>
-                        {currentTrack.artistName} — {currentTrack.collectionName}
-                    </small>
-                </div>
-                <button
-                    onClick={() =>
-                        isPlaying ? pauseTrack() : playTrack(currentTrack)
-                    }
-                    style={{
-                        background: "var(--color-pink)",
-                        color: "#fff",
-                        border: "none",
-                        padding: "0.5rem 1rem",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        fontWeight: "bold",
-                    }}
-                >
-                    {isPlaying ? "Pause" : "Play"}
-                </button>
-            </div>
-
             <div
                 style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.5rem",
+                    justifyContent: currentTrack ? "space-between" : "center",
+                    padding: "0.5rem 1rem",
                 }}
             >
-                <span style={{ fontSize: "0.8rem" }}>
-                    {formatTime(progress)}
-                </span>
-                <input
-                    type="range"
-                    min="0"
-                    max={duration || 30}
-                    step="0.1"
-                    value={progress}
-                    onChange={(e) => seek(Number(e.target.value))}
-                    style={{
-                        flex: 1,
-                        cursor: "pointer",
-                        accentColor: "var(--color-pink)",
-                    }}
-                />
-                <span style={{ fontSize: "0.8rem" }}>
-                    {formatTime(duration)}
-                </span>
+                {!currentTrack ? (
+                    <p>Tidak ada lagu yang diputar</p>
+                ) : (
+                    <>
+                        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                            <img
+                                src={currentTrack.artworkUrl100}
+                                alt={currentTrack.trackName}
+                                width="48"
+                                height="48"
+                                style={{ borderRadius: "4px" }}
+                            />
+                            <div>
+                                <h4 style={{ margin: 0 }}>{currentTrack.trackName}</h4>
+                                <small>{currentTrack.artistName}</small>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() =>
+                                isPlaying ? pauseTrack() : playTrack(currentTrack)
+                            }
+                            style={{
+                                background: "var(--color-pink)",
+                                color: "#fff",
+                                padding: "0.4rem 1rem",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            {isPlaying ? "Pause" : "Play"}
+                        </button>
+                    </>
+                )}
             </div>
+
+            {/* Seekbar tipis */}
+            {currentTrack && (
+                <div
+                    onClick={handleSeek}
+                    style={{
+                        height: "4px",
+                        width: "100%",
+                        background: "var(--color-border)",
+                        position: "relative",
+                        cursor: "pointer",
+                    }}
+                >
+                    <div
+                        style={{
+                            position: "absolute",
+                            height: "100%",
+                            width: duration ? `${(progress / duration) * 100}%` : "0%",
+                            background: "var(--color-pink)",
+                            transition: "width 0.15s linear",
+                        }}
+                    />
+                </div>
+            )}
         </footer>
     );
 }
