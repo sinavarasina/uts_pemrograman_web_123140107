@@ -70,7 +70,7 @@ export default function MusicList({
 
             {sortedTracks.map((track) => (
                 <div
-                    key={track.trackId}
+                    key={track.trackId || track.collectionId}
                     style={{
                         display: "flex",
                         alignItems: "center",
@@ -133,13 +133,7 @@ export default function MusicList({
                         </div>
                     </div>
 
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                        }}
-                    >
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                         <div style={{ fontSize: "0.75rem", opacity: 0.8 }}>
                             {new Date(track.releaseDate).getFullYear()}
                         </div>
@@ -245,16 +239,9 @@ export default function MusicList({
                         >
                             {selected.trackName}
                         </h3>
-                        <p
-                            style={{
-                                color: "var(--color-teal)",
-                                marginBottom: "0.6rem",
-                                textAlign: "left",
-                            }}
-                        >
+                        <p style={{ color: "var(--color-teal)", marginBottom: "0.6rem" }}>
                             {selected.artistName}
                         </p>
-
                         <p><strong>Album:</strong> {selected.collectionName}</p>
                         <p><strong>Genre:</strong> {selected.primaryGenreName}</p>
                         <p><strong>Durasi:</strong> {formatDuration(selected.trackTimeMillis)}</p>

@@ -10,6 +10,10 @@ export function PlayerProvider({ children }) {
     const audioRef = useRef(null);
 
     const playTrack = (track) => {
+        if (!track?.previewUrl) {
+            console.warn("Track tidak memiliki preview URL:", track);
+            return;
+        }
         setCurrentTrack(track);
         setIsPlaying(true);
     };
@@ -34,9 +38,11 @@ export function PlayerProvider({ children }) {
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
-        if (isPlaying) audio.play().catch(() => setIsPlaying(false));
+
+        if (isPlaying && currentTrack?.previewUrl)
+            audio.play().catch(() => setIsPlaying(false));
         else audio.pause();
-    }, [isPlaying]);
+    }, [isPlaying, currentTrack]);
 
     useEffect(() => {
         const audio = audioRef.current;

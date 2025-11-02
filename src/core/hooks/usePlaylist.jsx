@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
     getPlaylist,
     savePlaylist,
@@ -8,7 +8,7 @@ import {
 } from "../storage/playlistStorage";
 
 export function usePlaylist() {
-    const [playlist, setPlaylist] = useState(getPlaylist());
+    const [playlist, setPlaylist] = useState(() => getPlaylist());
 
     const add = useCallback((track) => {
         const newList = addToPlaylist(track);
@@ -25,9 +25,11 @@ export function usePlaylist() {
         setPlaylist([]);
     }, []);
 
+    const memoizedPlaylist = useMemo(() => playlist, [playlist]);
+
     useEffect(() => {
-        savePlaylist(playlist);
-    }, [playlist]);
+        savePlaylist(memoizedPlaylist);
+    }, [memoizedPlaylist]);
 
     useEffect(() => {
         const syncHandler = (e) => {
@@ -37,6 +39,6 @@ export function usePlaylist() {
         return () => window.removeEventListener("storage", syncHandler);
     }, []);
 
-    return { playlist, add, remove, clear };
+    return { playlist: memoizedPlaylist, add, remove, clear };
 }
 

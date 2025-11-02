@@ -53,7 +53,7 @@ export default function Home() {
 
     return (
         <section style={{ position: "relative", textAlign: "center" }}>
-            <h1 style={{ marginBottom: "1rem" }}>MiTunesX — Music Explorer</h1>
+            <h1 style={{ marginBottom: "1rem" }}>MiTunesX — Music iTunes Xplorer</h1>
 
             {term && <p>Hasil pencarian untuk <em>{term}</em></p>}
             {loading && <p>Mengambil data...</p>}
