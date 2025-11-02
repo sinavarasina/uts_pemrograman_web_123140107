@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 function formatDuration(ms) {
     if (!ms) return "-";
@@ -15,12 +15,60 @@ export default function MusicList({
     onRemove,
     showAdd = false,
     showRemove = false,
+    enableSort = false,
 }) {
     const [selected, setSelected] = useState(null);
+    const [sortBy, setSortBy] = useState("releaseDate");
+
+    useEffect(() => {
+        setSortBy("releaseDate");
+    }, [tracks]);
+
+    const sortedTracks = useMemo(() => {
+        if (!enableSort) return tracks;
+        const sorted = [...tracks];
+        switch (sortBy) {
+            case "price":
+                return sorted.sort((a, b) => (b.trackPrice || 0) - (a.trackPrice || 0));
+            case "title":
+                return sorted.sort((a, b) => a.trackName.localeCompare(b.trackName));
+            default:
+                return sorted.sort(
+                    (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
+                );
+        }
+    }, [tracks, sortBy, enableSort]);
 
     return (
         <div>
-            {tracks.map((track) => (
+            {enableSort && (
+                <div style={{ marginBottom: "0.8rem", textAlign: "right" }}>
+                    <label
+                        htmlFor="sort"
+                        style={{ marginRight: "0.5rem", fontSize: "0.9rem" }}
+                    >
+                        Urutkan:
+                    </label>
+                    <select
+                        id="sort"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={{
+                            background: "var(--color-dark)",
+                            color: "var(--color-teal)",
+                            border: "1px solid var(--color-border)",
+                            padding: "0.25rem 0.5rem",
+                            borderRadius: "4px",
+                        }}
+                    >
+                        <option value="releaseDate">Tanggal Rilis</option>
+                        <option value="price">Harga</option>
+                        <option value="title">Judul Lagu (A–Z)</option>
+                    </select>
+                </div>
+            )}
+
+            {sortedTracks.map((track) => (
                 <div
                     key={track.trackId}
                     style={{
@@ -172,7 +220,7 @@ export default function MusicList({
                             padding: "1.2rem 1.5rem",
                             width: "90%",
                             maxWidth: "420px",
-                            textAlign: "left", // ← ini kuncinya
+                            textAlign: "left",
                             boxShadow: "0 0 12px rgba(0,0,0,0.3)",
                             animation: "fadeIn 0.2s ease-in",
                         }}

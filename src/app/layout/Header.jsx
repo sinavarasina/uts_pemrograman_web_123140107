@@ -7,20 +7,26 @@ export default function Header({ onSearchSubmit }) {
     const inputRef = useRef(null);
     const [filterOpen, setFilterOpen] = useState(false);
     const [filters, setFilters] = useState({});
+    const [error, setError] = useState("");
     const location = useLocation();
     const isPlaylist = location.pathname === "/playlist";
+
     useKeymap(inputRef);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const term = inputRef.current.value.trim();
 
+        if (!term) {
+            setError("Kata kunci pencarian wajib diisi!");
+            inputRef.current.focus();
+            return;
+        }
+
+        setError("");
         const eventDetail = { term, filters };
         const eventName = isPlaylist ? "playlistSearch" : "musicSearch";
-
         window.dispatchEvent(new CustomEvent(eventName, { detail: eventDetail }));
-
-        if (!isPlaylist && !term) return;
 
         if (onSearchSubmit) onSearchSubmit(term);
     };
@@ -34,6 +40,7 @@ export default function Header({ onSearchSubmit }) {
                 padding: "0.5rem 1rem",
                 background: "var(--color-dark)",
                 borderBottom: "2px solid var(--color-border)",
+                flexWrap: "wrap",
             }}
         >
             <button
@@ -49,24 +56,48 @@ export default function Header({ onSearchSubmit }) {
                 Filter
             </button>
 
-            <form onSubmit={handleSubmit} style={{ flex: 1 }}>
+            <form onSubmit={handleSubmit} style={{ flex: 1, position: "relative" }}>
+
                 <input
                     ref={inputRef}
-                    type="search"
+                    type="text"
                     placeholder={
                         isPlaylist
                             ? "Cari musik di playlist... (/)"
                             : "Cari musik di iTunes... (/)"
                     }
+                    onFocus={(e) => {
+                        e.target.style.borderColor = "var(--color-pink)";
+                    }}
+                    onBlur={(e) => {
+                        e.target.style.borderColor = "var(--color-border)";
+                    }}
                     style={{
                         width: "100%",
                         padding: "0.5rem 0.75rem",
                         background: "var(--color-dark)",
                         color: "var(--color-teal)",
-                        border: "1px solid var(--color-border)",
-                        borderRadius: "4px",
+                        border: error
+                            ? "1px solid var(--color-pink)"
+                            : "1px solid var(--color-border)",
+                        outline: "none",
+                        transition: "border-color 0.2s ease",
                     }}
+                    onChange={() => setError("")}
                 />
+                {error && (
+                    <span
+                        style={{
+                            position: "absolute",
+                            top: "105%",
+                            left: "4px",
+                            fontSize: "0.75rem",
+                            color: "var(--color-pink)",
+                        }}
+                    >
+                        {error}
+                    </span>
+                )}
             </form>
 
             <FilterModal

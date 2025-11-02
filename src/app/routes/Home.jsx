@@ -28,7 +28,6 @@ export default function Home() {
             try {
                 const data = await searchItunes({ term, ...filters });
                 setResults(data);
-
                 sessionStorage.setItem("searchResults", JSON.stringify(data));
                 sessionStorage.setItem("searchTerm", term);
             } catch (err) {
@@ -66,6 +65,7 @@ export default function Home() {
                     onPlay={playTrack}
                     onAdd={add}
                     showAdd
+                    enableSort
                 />
             ) : (
                 !loading && (
